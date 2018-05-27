@@ -3,6 +3,7 @@ import sys
 import time
 import queue
 import threading
+from threading import current_thread
 import traceback
 from datetime import datetime
 import requests
@@ -11,7 +12,7 @@ import csv
 from fake_useragent import UserAgent
 from selenium import webdriver
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-
+import zipfile
 
 
 LogFilePath = './logs/'
@@ -44,6 +45,9 @@ class TaskManager():
         self.ProxyTime = datetime.now()
         self.ProxyTimeout = 120
         self.ProxyEnable = True
+        self.AuthProxy = False
+        if not os.path.exists('./ProxyPluginFiles/'):
+            os.mkdir('./ProxyPluginFiles/')
 
         # Thread setting
         self.MaxRetry = 0 # Max retry number if failed
@@ -113,6 +117,9 @@ class TaskManager():
         #options.add_extension("./EditThisCookie_v1.4.3.crx")
         # set proxy
         if proxy:
+            if self.AuthProxy:
+                options.add_extension(self.MakeAuthProxy(proxy))
+        else:
             options.add_argument('--proxy-server=http://' + proxy)
         # 不加载图片
         if not self.LoadImage:
@@ -133,6 +140,8 @@ class TaskManager():
 
     # generate and manage the threads
     def SubmitTask(self, TaskInfo, proxy):
+        if self.AuthProxy:
+            proxy = TaskInfo['proxy']
         try:
             driver = self.WebDriver(proxy)
             self.SubTask(driver, TaskInfo)
@@ -195,7 +204,7 @@ class TaskManager():
         self.FileLock.release()
 
     def GetProxy(self):
-        if self.ProxyEnable:
+        if self.ProxyEnable and not self.AuthProxy:
             if self.ProxyPool == [] or (int((datetime.now() - self.ProxyTime).seconds) > self.ProxyTimeout):
                 try:
                     ProxyText = requests.get(self.ProxyUrl).text
@@ -215,6 +224,70 @@ class TaskManager():
             return self.ProxyPool.pop() if self.ProxyPool else ''
         else:
             return ''
+
+    def MakeAuthProxy(self,proxy):
+        ProxySplit = proxy.split(':')
+        ip = ProxySplit[0]
+        port = ProxySplit[1]
+        username = ProxySplit[2]
+        password = ProxySplit[3]
+        manifest_json = """
+                {
+                    "version": "1.0.0",
+                    "manifest_version": 2,
+                    "name": "Chrome Proxy",
+                    "permissions": [
+                        "proxy",
+                        "tabs",
+                        "unlimitedStorage",
+                        "storage",
+                        "<all_urls>",
+                        "webRequest",
+                        "webRequestBlocking"
+                    ],
+                    "background": {
+                        "scripts": ["background.js"]
+                    },
+                    "minimum_chrome_version":"22.0.0"
+                }
+                """
+
+        background_js = '''
+                var config = {
+                        mode: "fixed_servers",
+                        rules: {
+                          singleProxy: {
+                            scheme: "http",
+                            host: "''' + ip + '''",
+                            port: parseInt(''' + port + ''')
+                          },
+                          bypassList: ["foobar.com"]
+                        }
+                      };
+
+                chrome.proxy.settings.set({value: config, scope: "regular"}, function() {});
+
+                function callbackFn(details) {
+                    return {
+                        authCredentials: {
+                            username: "''' + username + '''",
+                            password: "''' + password + '''"
+                        }
+                    };
+                }
+
+                chrome.webRequest.onAuthRequired.addListener(
+                            callbackFn,
+                            {urls: ["<all_urls>"]},
+                            ['blocking']
+                );
+                '''
+        TreadTask = current_thread()
+        pluginfile = './ProxyPluginFiles/' + 'proxy_auth_plugin_' + TreadTask.getName() + '.zip'
+        with zipfile.ZipFile(pluginfile, 'w') as zp:
+            zp.writestr("manifest.json", manifest_json)
+            zp.writestr("background.js", background_js)
+        return pluginfile
 
     def CountThread(self):
         self.ThreadAliveNum = 0
@@ -263,7 +336,7 @@ class TaskManager():
             # Start a thread
             try:
                 print('Start Task::::: thread_' + str(self.ThreadSelect) + ' :::: ' + proxy)
-                task_thread = threading.Thread(target=self.SubmitTask, args=(TaskInfo, proxy),name=str(self.ThreadSelect))
+                task_thread = threading.Thread(target=self.SubmitTask, args=(TaskInfo, proxy),name=self.TaskName+str(self.ThreadSelect))
                 task_thread.setDaemon(daemonic=True)
                 task_thread.start()
                 if len(self.ThreadGroup) >= self.ThreadNumber:

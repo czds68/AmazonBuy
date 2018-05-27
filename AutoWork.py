@@ -59,6 +59,7 @@ class PlaceOrder(TaskManager):
         self.CodeLogEn(False)
         self.ThreadNumber = 1
         self.MaxRetry = 3
+        self.AuthProxy = True
         self.ProxyEnable = True
         self.ProxyTimeout = 60
         self.TaskName = 'PlaceOrder_auto'

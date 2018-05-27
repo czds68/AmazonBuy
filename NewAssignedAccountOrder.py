@@ -65,7 +65,7 @@ ProductFrame.set_index('asin', inplace=True)
 class PlaceOrder(TaskManager):
     def __init__(self):
         TaskManager.__init__(self)
-        self.ReportInfo = ['username', 'password', 'cookies','fullname','address','postalcode','city','state','phonenumber', 'Timestamp', 'ordernumber', 'asins']
+        self.ReportInfo = ['username', 'password', 'cookies', 'proxy','billingaddress','shippingaddress', 'Timestamp', 'ordernumber', 'asins']
         self.ReportErrorInfo = ['errorcode', 'retrynumber']
         self.FatalError = ['VerifyEmail', 'BadPassword', 'FixAddress', 'AddressNotMatch', 'GiftCardUsed', 'BadGiftCard']
         self.TaskSync = False
@@ -73,6 +73,7 @@ class PlaceOrder(TaskManager):
         self.ThreadNumber = 1
         self.MaxRetry = 3
         self.ProxyEnable = True
+        self.AuthProxy = True
         self.ProxyTimeout = 60
         self.TaskName = 'PlaceOrder_auto'
         self.TaskInfos = OrderTaskTable
