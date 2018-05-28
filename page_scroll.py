@@ -120,9 +120,9 @@ class page_scroll:
     # use JS to click
     def ClickElement(self, element):
         self.ScrollToElement(element)
-        self.driver.execute_script("arguments[0].click()", element)
-        time.sleep(1)
-        #element.click()
+        #self.driver.execute_script("arguments[0].click()", element)
+        #time.sleep(1)
+        element.click()
 
     # use JS to move
     def move_to_element(self, element):
