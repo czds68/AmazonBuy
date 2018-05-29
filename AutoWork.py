@@ -61,7 +61,7 @@ for name, item in OrderTaskFrame.iterrows():
 class PlaceOrder(TaskManager):
     def __init__(self):
         TaskManager.__init__(self)
-        self.ReportInfo = ['Timestamp', 'username', 'ordernumber', 'asins']
+        self.ReportInfo = ['username', 'password', 'cookies', 'proxy','billingaddress','shippingaddress', 'Timestamp', 'ordernumber', 'asins']
         self.ReportErrorInfo = ['errorcode', 'retrynumber']
         self.FatalError = ['VerifyEmail', 'BadPassword', 'FixAddress', 'AddressNotMatch', 'GiftCardUsed', 'BadGiftCard']
         self.TaskSync = False
