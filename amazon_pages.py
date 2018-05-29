@@ -421,6 +421,7 @@ class AmazonPages(page_scroll):
         for i in range(PageNum):
             self.ViewWholePage(ScrollSpeed=[30, 60])
             self.ViewOtherProduct(asin=Info['asin'])
+            self.ViewOtherProduct(asin=Info['asin'])
             self.speed = randint(30, 60)
             if self.FindProduct(asin=Info['asin'], ClickProduct=ClickProduct):
                 return True
@@ -430,7 +431,7 @@ class AmazonPages(page_scroll):
     def SearchAndView(self, Info):
         if not self.SearchProduct(Info):
             return False
-        if not self.ViewOurProduct(timeout=120):
+        if not self.ViewOurProduct(timeout=240):
             return False
         #self.ViewOtherProduct(asin=Info['asin'])
         return True

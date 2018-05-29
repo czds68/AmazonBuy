@@ -40,7 +40,7 @@ class AmazonFunction(page_scroll):
                            'ca': 'https://www.amazon.ca/',
                            'uk': 'https://www.amazon.co.uk/'}
         self.captcha = CaptchaUpload('f4ab06a8e3e5be77134312d55c7a7bb4')
-        self.Replace = re.compile('[ \.:,-]')
+        self.Replace = re.compile('[ \.:#,-]')
 
     def probability_to_do(self, probability):
         if random.random() <= probability:
