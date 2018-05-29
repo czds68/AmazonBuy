@@ -5,7 +5,7 @@ import csv
 import time
 import json
 import random
-import parseinfo
+#import parseinfo
 from random import randint
 from datetime import datetime
 import pandas as pd
@@ -14,6 +14,15 @@ import pandas as pd
 AccountFile     = './amazonbuy_database/AccountInfo.csv'
 AddressFile     = './amazonbuy_database/shippingaddress.csv'
 OrderTaskFile   = './amazonbuy_database/ordertask.csv'
+ProductFile     = './amazonbuy_database/productinfo.csv'
+
+ProductFrame = pd.DataFrame(pd.read_csv(ProductFile,header=0, dtype=str))
+ProductFrame.drop_duplicates(subset='asin', inplace=True)
+ProductFrame.dropna(how='all', inplace=True)
+ProductFrame.dropna(axis=1, how='all', inplace=True)
+#ProductFrame.dropna(how='any', inplace=True)
+ProductFrame.fillna(value='',inplace=True)
+ProductFrame.set_index('asin', inplace=True)
 
 AccountFrame = pd.DataFrame(pd.read_csv(AccountFile,header=0, dtype=str,sep=','))
 AccountFrame.drop_duplicates(subset='username', inplace=True)
@@ -85,7 +94,7 @@ class PlaceOrder(TaskManager):
         SearchTask = AmazonPages(driver)
         for asin in TaskInfo['asins']:
             Task.FunctionInfo['asin'] = asin
-            Task.FunctionInfo.update(parseinfo.ProductFrame.loc[Task.FunctionInfo['asin']].to_dict())
+            Task.FunctionInfo.update(ProductFrame.loc[Task.FunctionInfo['asin']].to_dict())
             Task.FunctionInfo['lowprice'] = str(round((float(Task.FunctionInfo['buyboxprice']) - 0.01), 2))
             Task.FunctionInfo['highprice'] = str(round((float(Task.FunctionInfo['buyboxprice']) + 0.01), 2))
             #Task.FunctionInfo['lowprice'] = Task.FunctionInfo['buyboxprice']
