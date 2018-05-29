@@ -196,8 +196,7 @@ class AmazonPages(page_scroll):
 
     def FindProduct(self, asin, ClickProduct =True):
         try:
-            PageItems = self.driver.find_elements_by_class_name("a-link-normal")
-            PageItems.append(self.driver.find_elements_by_class_name("a-button-inner"))
+            PageItems = self.driver.find_elements_by_class_name("a-link-normal") + self.driver.find_elements_by_class_name("a-button-inner")
             for item in PageItems:
                 if (('dp/' + asin) in item.get_attribute("href")) and item.is_enabled() and item.is_displayed():
                     print('Production found!')
