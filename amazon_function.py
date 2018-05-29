@@ -795,6 +795,12 @@ class AmazonFunction(page_scroll):
             self.FunctionInfo['status'] = False
             return False
 
+        # No use Original address
+        try:
+            self.click_on_element(self.driver.find_element_by_class_name('pmts-use-this-address'))
+        except:
+            pass
+
         try:
             WebDriverWait(self.driver, 20, 0.5, ignored_exceptions=TimeoutException). \
                 until(EC.visibility_of_element_located((By.CLASS_NAME, "pmts-instrument-display-name")))
