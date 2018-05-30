@@ -64,17 +64,19 @@ class page_scroll:
 
     # 滚动到位置
     def sroll_to_position(self, position):
-        if self.current_position() >= position:
-            if self.current_position() > self.speed:
-                next_position = self.current_position() - self.speed
+        current_position = self.current_position()
+        if current_position > position:
+            if current_position > self.speed:
+                next_position = current_position - self.speed
             else:
                 next_position = 0
             self.driver.execute_script("window.scrollTo(0, arguments[0]);", next_position)
-        elif self.driver.get_window_size()['height'] >= self.get_page_size() - self.current_position() or \
-                (position - self.current_position()) <= self.speed:
+        elif self.driver.get_window_size()['height'] >= (position - current_position) >= 0:
+            self.driver.execute_script("arguments[0].scrollIntoView()", element)
+            self.driver.execute_script("window.scrollTo(0, arguments[0]);", position)
             return True
         else:
-            next_position = self.current_position() + self.speed
+            next_position = current_position + self.speed
             self.driver.execute_script("window.scrollTo(0, arguments[0]);", next_position)
 
         return self.sroll_to_position(position)

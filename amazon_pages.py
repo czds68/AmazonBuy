@@ -430,7 +430,7 @@ class AmazonPages(page_scroll):
     def SearchAndView(self, Info):
         if not self.SearchProduct(Info):
             return False
-        if not self.ViewOurProduct(timeout=240):
+        if not self.ViewOurProduct(timeout=600):
             return False
         #self.ViewOtherProduct(asin=Info['asin'])
         return True

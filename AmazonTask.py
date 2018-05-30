@@ -171,7 +171,7 @@ class TestSearch(TaskManager):
         self.CodeLogEn(False)
         self.ThreadNumber = 5
         self.MaxRetry = 3
-        self.ProxyEnable = True
+        self.ProxyEnable = False
         self.TaskName = 'TestSearch'
         self.TaskInfos = []
         parseinfo.ProductFrame.reset_index(inplace=True)
