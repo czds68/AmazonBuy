@@ -198,6 +198,8 @@ class AmazonPages(page_scroll):
         try:
             PageItems = self.driver.find_elements_by_class_name("a-link-normal") + self.driver.find_elements_by_class_name("a-button-inner")
             for item in PageItems:
+                if not item:
+                    continue
                 if (('dp/' + asin) in item.get_attribute("href")) and item.is_enabled() and item.is_displayed():
                     print('Production found!')
                     if ClickProduct:
@@ -205,7 +207,6 @@ class AmazonPages(page_scroll):
                         item.click()
                     return True
         except:
-            print(traceback.print_exc())
             pass
         return False
 
