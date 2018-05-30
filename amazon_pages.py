@@ -130,7 +130,7 @@ class AmazonPages(page_scroll):
         self.ViewDetailAnswers()
         self.ViewMoreAnswer()
         while (datetime.now() - StartTime).seconds < timeout:
-            self.WalkAround(RetryNum=[1, 2])
+            self.WalkAround(RetryNum=[1, 2], ScrollSpeed=[5, 20])
         return True
 
 
@@ -210,7 +210,7 @@ class AmazonPages(page_scroll):
             pass
         return False
 
-    def ViewWholePage(self, ScrollSpeed = [10,40]):
+    def ViewWholePage(self, ScrollSpeed = [10,30]):
         # noinspection PyBroadException
         try:
             WebDriverWait(self.driver, 30, 0.5, ignored_exceptions=TimeoutException)\
@@ -223,7 +223,7 @@ class AmazonPages(page_scroll):
             print('View whole page fail!')
             return False
 
-    def ViewReviewer(self, probability = 0.4, ScrollSpeed = [10,40]):
+    def ViewReviewer(self, probability = 0.4, ScrollSpeed = [10,30]):
         # noinspection PyBroadException
         try:
             self.driver.find_element_by_id('cm-cr-dp-review-list').find_elements_by_tag_name("a")
@@ -415,14 +415,14 @@ class AmazonPages(page_scroll):
             return False
         if not self.SubmitKeyword(Info['keyword']):
             return False
-        self.ViewWholePage(ScrollSpeed=[30, 60])
+        self.ViewWholePage(ScrollSpeed=[20, 60])
         if not self.SetPrice(Info['lowprice'], Info['highprice']):
             return False
         for i in range(PageNum):
-            self.ViewWholePage(ScrollSpeed=[30, 60])
+            self.ViewWholePage(ScrollSpeed=[20, 60])
             self.ViewOtherProduct(asin=Info['asin'])
             self.ViewOtherProduct(asin=Info['asin'])
-            self.speed = randint(30, 60)
+            self.speed = randint(10, 30)
             if self.FindProduct(asin=Info['asin'], ClickProduct=ClickProduct):
                 return True
             if not self.GoToNextPage():
