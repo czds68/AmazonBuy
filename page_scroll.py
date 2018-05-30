@@ -72,7 +72,6 @@ class page_scroll:
                 next_position = 0
             self.driver.execute_script("window.scrollTo(0, arguments[0]);", next_position)
         elif self.driver.get_window_size()['height'] >= (position - current_position) >= 0:
-            self.driver.execute_script("arguments[0].scrollIntoView()", element)
             self.driver.execute_script("window.scrollTo(0, arguments[0]);", position)
             return True
         else:
