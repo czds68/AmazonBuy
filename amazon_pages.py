@@ -118,19 +118,20 @@ class AmazonPages(page_scroll):
 
     def ViewOurProduct(self, timeout = 200):
         StartTime = datetime.now()
-        if not self.ViewWholePage():
+        if not self.ViewWholePage(ScrollSpeed=[5, 20]):
             return False
-        if not self.WalkAround(RetryNum=[1, 5]):
+        if not self.WalkAround(RetryNum=[1, 5], ScrollSpeed=[5, 20]):
             return False
         #if not self.view_thumbnail():
         #    return False
-        self.ViewReviewer()
+        self.ViewReviewer(ScrollSpeed=[5, 20])
         if (datetime.now() - StartTime).seconds > timeout:
             return True
-        self.ViewDetailAnswers()
-        self.ViewMoreAnswer()
+        self.ViewDetailAnswers(ScrollSpeed=[5, 20])
+        self.ViewMoreAnswer(ScrollSpeed=[5, 20])
         while (datetime.now() - StartTime).seconds < timeout:
-            self.WalkAround(RetryNum=[1, 2], ScrollSpeed=[5, 20])
+            self.WalkAround(RetryNum=[1, 2], ScrollSpeed=[5, 15])
+            time.sleep(randint(10, 30))
         return True
 
 
@@ -223,7 +224,7 @@ class AmazonPages(page_scroll):
             print('View whole page fail!')
             return False
 
-    def ViewReviewer(self, probability = 0.4, ScrollSpeed = [10,30]):
+    def ViewReviewer(self, probability = 0.4, ScrollSpeed = [5,20]):
         # noinspection PyBroadException
         try:
             self.driver.find_element_by_id('cm-cr-dp-review-list').find_elements_by_tag_name("a")
