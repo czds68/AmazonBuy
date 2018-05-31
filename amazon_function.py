@@ -542,8 +542,12 @@ class AmazonFunction(page_scroll):
 
         # Login in by password only
         try:
-            self.driver.find_element_by_xpath("//div[contains(text(),'" + self.FunctionInfo['username'] + "')]").click()
-            self.driver.find_element_by_xpath("//input[@name='rememberMe']").click()
+            self.driver.find_element_by_class_name("cvf-account-switcher-profile-details-after-account-removed").click()
+        except:
+            pass
+        try:
+            #self.driver.find_element_by_xpath("//div[contains(text(),'" + self.FunctionInfo['username'] + "')]").click()
+            #self.driver.find_element_by_xpath("//input[@name='rememberMe']").click()
             self.driver.find_element_by_id("ap_password").send_keys(self.FunctionInfo['password'])
             self.driver.find_element_by_id("signInSubmit").click()
         except: pass
@@ -562,6 +566,8 @@ class AmazonFunction(page_scroll):
             self.driver.find_element_by_id("ap_switch_account_link").click()
         except:
             pass
+
+
         # input Email
         try:
             self.driver.find_element_by_id("ap_email").send_keys(self.FunctionInfo['username'])
