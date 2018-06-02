@@ -80,7 +80,7 @@ class PlaceOrder(TaskManager):
 
     # overiding method
     def SubTask(self, driver, TaskInfo):
-        driver.implicitly_wait(3)
+        driver.implicitly_wait(10)
         Task = AmazonFunction(driver, TaskInfo)
         TaskInfo['ordernumber'] = ''
         Task.speed = randint(80, 160)
