@@ -45,7 +45,9 @@ class Review(TaskManager):
         self.submitedUser = []
         self.TaskInfos = []
         for name, item in ReviewerFrame.iterrows():
-            self.TaskInfos.append(item.to_dict())
+            dict_item = AccountFrame.loc[item['username']].to_dict()
+            dict_item.update(item.to_dict())
+            self.TaskInfos.append(dict_item)
         pass
 
     def SubTaskFinal(self, TaskInfo):
@@ -60,9 +62,6 @@ class Review(TaskManager):
     def SubTask(self, driver, TaskInfo):
         driver.implicitly_wait(10)
         TaskInfo['Logout'] = True
-        TaskInfo['cookies'] = AccountFrame.loc[TaskInfo['username']]['cookies']
-        TaskInfo['password'] = AccountFrame.loc[TaskInfo['username']]['password']
-        TaskInfo['proxy'] = AccountFrame.loc[TaskInfo['username']]['proxy']
         if TaskInfo['username'] in self.submitedUser:
             TaskInfo['Logout'] = False
             while TaskInfo['username'] in self.submitedUser:
