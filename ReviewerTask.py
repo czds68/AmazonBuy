@@ -35,10 +35,11 @@ class Review(TaskManager):
         self.FatalError = ['BadPassword', 'BadEmail']
         self.TaskSync = False
         self.CodeLogEn(False)
-        self.ThreadNumber = 5
+        self.ThreadNumber = 1
         self.MaxRetry = 2
         self.LoadImage = False
-        self.ProxyEnable = False
+        self.ProxyEnable = True
+        self.AuthProxy = True
         self.ProxyTimeout = 60
         self.TaskName = 'SubmitReviewer'
         self.submitedUser = []

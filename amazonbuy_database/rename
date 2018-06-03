@@ -1,0 +1,20 @@
+mv smallgiftcard-表格\ 1.csv smallgiftcard.csv
+mv ordertask-表格\ 1.csv ordertask.csv
+mv orderrecored-表格\ 1.csv orderrecored.csv
+mv Giftcard-表格\ 1.csv Giftcard.csv
+mv productinfo-表格\ 1.csv productinfo.csv
+mv shippingaddress-表格\ 1.csv shippingaddress.csv
+mv Finance-表格\ 1.csv Finance.csv
+mv AccountInfo-表格\ 1.csv AccountInfo.csv
+mv reviewer-表格\ 1.csv reviewer.csv
+
+
+mv small\ gift\ card* smallgiftcard.csv
+mv order\ task* ordertask.csv
+mv order\ recored* orderrecored.csv
+mv Gift\ card* Giftcard.csv
+mv product\ info* productinfo.csv
+mv shipping\ address* shippingaddress.csv
+mv Finance-* Finance.csv
+mv Account\ Info* AccountInfo.csv
+
