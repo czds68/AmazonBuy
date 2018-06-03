@@ -58,10 +58,11 @@ class Review(TaskManager):
 
     # overiding method
     def SubTask(self, driver, TaskInfo):
-        driver.implicitly_wait(5)
+        driver.implicitly_wait(10)
         TaskInfo['Logout'] = True
         TaskInfo['cookies'] = AccountFrame.loc[TaskInfo['username']]['cookies']
         TaskInfo['password'] = AccountFrame.loc[TaskInfo['username']]['password']
+        TaskInfo['proxy'] = AccountFrame.loc[TaskInfo['username']]['proxy']
         if TaskInfo['username'] in self.submitedUser:
             TaskInfo['Logout'] = False
             while TaskInfo['username'] in self.submitedUser:
