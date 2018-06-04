@@ -135,8 +135,11 @@ class PlaceOrder(TaskManager):
                     print('Add cart fail...')
                     # Fatal error if not found TBD
                     return False
-        if not Task.PlaceOrder():
-            return False
+        SubRetry = 0
+        while not Task.PlaceOrder():
+            SubRetry += 1
+            if SubRetry > self.SubMaxRetry:
+                return False
         TaskInfo['cookies'] = json.dumps(driver.get_cookies())
         return True
 
