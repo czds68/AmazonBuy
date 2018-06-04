@@ -542,7 +542,7 @@ class AmazonFunction(page_scroll):
 
         # Login in by password only
         try:
-            self.driver.find_element_by_class_name("cvf-account-switcher-profile-details-after-account-removed").click()
+            self.driver.find_element_by_class_name("cvf-account-switcher-claim").click()
         except:
             pass
         try:
@@ -567,6 +567,10 @@ class AmazonFunction(page_scroll):
         except:
             pass
 
+        try:
+            self.driver.find_element_by_id("cvf-account-switcher-add-accounts-link").click()
+        except:
+            pass
 
         # input Email
         try:
@@ -575,7 +579,7 @@ class AmazonFunction(page_scroll):
             print("Login: email input error...")
             self.FunctionInfo['errorcode'] = 'EmailSubmitFail'
             self.FunctionInfo['status'] = False
-            return False
+            #return False
         try: self.driver.find_element_by_xpath('//input[@id="continue"]').click()
         except: pass
         # check bad email
@@ -597,7 +601,7 @@ class AmazonFunction(page_scroll):
             print('Login: Fail to submit password.')
             self.FunctionInfo['errorcode'] = 'PasswordSubmitFail'
             self.FunctionInfo['status'] = False
-            return False
+            #return False
 
         # Use otp verification Code for login
         if self.VerifyEnhance:
