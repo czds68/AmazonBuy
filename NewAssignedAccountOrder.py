@@ -75,6 +75,7 @@ class PlaceOrder(TaskManager):
         self.ProxyEnable = True
         self.AuthProxy = True
         self.ProxyTimeout = 60
+        self.SubMaxRetry = 2
         self.TaskName = 'PlaceOrder_auto'
         self.TaskInfos = OrderTaskTable
         for item in self.TaskInfos:
@@ -97,13 +98,19 @@ class PlaceOrder(TaskManager):
             return False
         time.sleep(5)
         Task.FunctionInfo.update(TaskInfo['billingaddress'])
-        if not Task.AddCreditCard():
-            print('Credit Card add fail for: ' + TaskInfo['username'])
-            return False
+        SubRetry = 0
+        while not Task.AddCreditCard():
+            SubRetry += 1
+            if SubRetry > self.SubMaxRetry:
+                print('Credit Card add fail for: ' + TaskInfo['username'])
+                return False
         Task.FunctionInfo.update(TaskInfo['shippingaddress'])
-        if not Task.SetAddress():
-            print(traceback.print_exc())
-            return False
+        SubRetry = 0
+        while not Task.SetAddress():
+            SubRetry += 1
+            if SubRetry > self.SubMaxRetry:
+                print(traceback.print_exc())
+                return False
         SearchTask = AmazonPages(driver)
         for asin in TaskInfo['asins']:
             Task.FunctionInfo['asin'] = asin
@@ -112,16 +119,22 @@ class PlaceOrder(TaskManager):
             Task.FunctionInfo['highprice'] = str(round((float(Task.FunctionInfo['buyboxprice']) + 0.02), 2))
             #Task.FunctionInfo['lowprice'] = Task.FunctionInfo['buyboxprice']
             #Task.FunctionInfo['highprice'] = Task.FunctionInfo['buyboxprice']
-            if not SearchTask.SearchAndView(TaskInfo):
-                print('Search production fail...')
-                # Fatal error if not found in any page  TBD
-                TaskInfo['errorcode'] = 'SearchFail'
-                TaskInfo['status'] = False
-                return False
-            if not Task.AddCart():
-                print('Add cart fail...')
-                # Fatal error if not found TBD
-                return False
+            SubRetry = 0
+            while not SearchTask.SearchAndView(TaskInfo):
+                SubRetry += 1
+                if SubRetry > self.SubMaxRetry:
+                    print('Search production fail...')
+                    # Fatal error if not found in any page  TBD
+                    TaskInfo['errorcode'] = 'SearchFail'
+                    TaskInfo['status'] = False
+                    return False
+            SubRetry = 0
+            while not Task.AddCart():
+                SubRetry += 1
+                if SubRetry > self.SubMaxRetry:
+                    print('Add cart fail...')
+                    # Fatal error if not found TBD
+                    return False
         if not Task.PlaceOrder():
             return False
         TaskInfo['cookies'] = json.dumps(driver.get_cookies())
