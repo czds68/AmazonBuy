@@ -20,7 +20,7 @@ AccountFile = './amazonbuy_database/AccountInfo.csv'
 AccountFrame = pd.DataFrame(pd.read_csv(AccountFile,header=0, dtype=str,sep=','))
 AccountFrame.drop_duplicates(subset='username', inplace=True)
 AccountFrame.dropna(how='all', inplace=True)
-AccountFrame.dropna(axis=1, how='all', inplace=True)
+#AccountFrame.dropna(axis=1, how='all', inplace=True)
 #AccountFrame.dropna(how='any', inplace=True)
 AccountFrame.fillna('',inplace=True)
 AccountFrame.set_index('username', inplace=True)
@@ -48,7 +48,7 @@ FinanceFrame = pd.DataFrame(pd.read_csv(FinanceFile,header=0, dtype=str))
 FinanceFrame.drop_duplicates(inplace=True)
 FinanceFrame.dropna(how='all', inplace=True)
 FinanceFrame.dropna(axis=1, how='all', inplace=True)
-FinanceFrame.dropna(how='any', inplace=True)
+#FinanceFrame.dropna(how='any', inplace=True)
 FinanceFrame.fillna(value='',inplace=True)
 FinanceFrame.set_index('username', inplace=True)
 
@@ -78,6 +78,7 @@ class PlaceOrder(TaskManager):
         self.SubMaxRetry = 2
         self.TaskName = 'PlaceOrder_auto'
         self.TaskInfos = OrderTaskTable
+        tt = AccountFrame
         for item in self.TaskInfos:
             item.update({'cookies': ''})
             item.update(AccountFrame.loc[item['username']].to_dict())
