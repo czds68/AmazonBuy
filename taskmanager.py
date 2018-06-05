@@ -119,8 +119,8 @@ class TaskManager():
         if proxy:
             if self.AuthProxy:
                 options.add_extension(self.MakeAuthProxy(proxy))
-        else:
-            options.add_argument('--proxy-server=http://' + proxy)
+            else:
+                options.add_argument('--proxy-server=http://' + proxy)
         # 不加载图片
         if not self.LoadImage:
             options.add_experimental_option("prefs", {"profile.managed_default_content_settings.images": 2})
