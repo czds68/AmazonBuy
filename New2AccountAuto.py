@@ -70,6 +70,7 @@ class PlaceOrder(TaskManager):
         self.AuthProxy = True
         self.ProxyTimeout = 60
         self.SubMaxRetry = 2
+        self.NewRandomAccount = False
         self.TaskName = 'PlaceOrder_auto'
         self.TaskInfos = OrderTaskTable
         for i in range(len(self.TaskInfos)):
@@ -86,7 +87,8 @@ class PlaceOrder(TaskManager):
         TaskInfo['ordernumber'] = ''
         Task.FunctionInfo.update(TaskInfo['shippingaddress'])
         Task.speed = randint(50, 100)
-        if not Task.login():
+        EmailDomain = '@blessmindy.com'
+        if not Task.CreatAcount(EmailDomain):
             return False
         time.sleep(5)
         Task.FunctionInfo.update(TaskInfo['billingaddress'])
