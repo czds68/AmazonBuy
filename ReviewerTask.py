@@ -30,7 +30,7 @@ AccountFrame.set_index('username', inplace=True)
 class Review(TaskManager):
     def __init__(self):
         TaskManager.__init__(self)
-        self.ReportInfo = ['username', 'password','cookies', 'proxy', 'asin', 'Timestamp']
+        self.ReportInfo = ['username', 'password', 'customername', 'cookies', 'proxy', 'asin', 'Timestamp']
         self.ReportErrorInfo = ['errorcode', 'retrynumber']
         self.FatalError = ['BadPassword', 'BadEmail']
         self.TaskSync = False

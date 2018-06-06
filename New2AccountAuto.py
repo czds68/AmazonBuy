@@ -1,5 +1,6 @@
 from taskmanager import TaskManager
 from amazon_function import AmazonFunction
+from amazon_pages import AmazonPages
 import csv
 import time
 import json
@@ -17,7 +18,7 @@ ProductFile     = './amazonbuy_database/productinfo.csv'
 
 AccountFrame = pd.DataFrame(pd.read_csv(AccountFile,header=0, dtype=str,sep=','))
 AccountFrame.drop_duplicates(subset='username', inplace=True)
-AccountFrame.dropna(how='all', inplace=True)
+#AccountFrame.dropna(how='all', inplace=True)
 #AccountFrame.dropna(axis=1, how='all', inplace=True)
 #AccountFrame.dropna(how='any', inplace=True)
 AccountFrame.fillna(value='',inplace=True)
@@ -58,15 +59,17 @@ ProductFrame.set_index('asin', inplace=True)
 class PlaceOrder(TaskManager):
     def __init__(self):
         TaskManager.__init__(self)
-        self.ReportInfo = ['username', 'password', 'cookies','fullname','address','postalcode','city','state','phonenumber', 'Timestamp', 'ordernumber', 'asins']
+        self.ReportInfo = ['username', 'password', 'cookies', 'customername','shippingaddress','billingaddress', 'Timestamp', 'ordernumber', 'asins']
         self.ReportErrorInfo = ['errorcode', 'retrynumber']
         self.FatalError = ['VerifyEmail', 'BadPassword', 'FixAddress', 'AddressNotMatch', 'GiftCardUsed', 'BadGiftCard']
         self.TaskSync = False
         self.CodeLogEn(False)
         self.ThreadNumber = 1
-        self.MaxRetry = 3
+        self.MaxRetry = 2
         self.ProxyEnable = True
+        self.AuthProxy = True
         self.ProxyTimeout = 60
+        self.SubMaxRetry = 2
         self.TaskName = 'PlaceOrder_auto'
         self.TaskInfos = OrderTaskTable
         for i in range(len(self.TaskInfos)):
@@ -87,12 +90,17 @@ class PlaceOrder(TaskManager):
             return False
         time.sleep(5)
         Task.FunctionInfo.update(TaskInfo['billingaddress'])
-        if not Task.AddCreditCard():
+        SubRetry = 0
+        while not Task.AddCreditCard():
+            SubRetry += 1
             print('Credit Card add fail for: ' + TaskInfo['username'])
             return False
         Task.FunctionInfo.update(TaskInfo['shippingaddress'])
-        if not Task.SetAddress():
+        SubRetry = 0
+        while not Task.SetAddress():
+            SubRetry += 1
             return False
+        SearchTask = AmazonPages(driver)
         for asin in TaskInfo['asins']:
             Task.FunctionInfo['asin'] = asin
             Task.FunctionInfo.update(ProductFrame.loc[Task.FunctionInfo['asin']].to_dict())
@@ -100,17 +108,23 @@ class PlaceOrder(TaskManager):
             Task.FunctionInfo['highprice'] = str(round((float(Task.FunctionInfo['buyboxprice']) + 0.01), 2))
             #Task.FunctionInfo['lowprice'] = Task.FunctionInfo['buyboxprice']
             #Task.FunctionInfo['highprice'] = Task.FunctionInfo['buyboxprice']
-            if not Task.SearchProduct():
+            SubRetry = 0
+            while not SearchTask.SearchAndView(TaskInfo):
+                SubRetry += 1
                 print('Search production fail...')
                 # Fatal error if not found in any page  TBD
                 TaskInfo['errorcode'] = 'SearchFail'
                 TaskInfo['status'] = False
                 return False
-            if not Task.AddCart():
+            SubRetry = 0
+            while not Task.AddCart():
+                SubRetry += 1
                 print('Add cart fail...')
                 # Fatal error if not found TBD
                 return False
-        if not Task.PlaceOrder():
+        SubRetry = 0
+        while not Task.PlaceOrder():
+            SubRetry += 1
             return False
         TaskInfo['cookies'] = json.dumps(driver.get_cookies())
         return True

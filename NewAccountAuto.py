@@ -1,5 +1,6 @@
 from taskmanager import TaskManager
 from amazon_function import AmazonFunction
+from amazon_pages import AmazonPages
 import csv
 import time
 import json
@@ -49,7 +50,7 @@ ProductFrame.set_index('asin', inplace=True)
 class PlaceOrder(TaskManager):
     def __init__(self):
         TaskManager.__init__(self)
-        self.ReportInfo = ['username', 'password', 'cookies', 'proxy', 'Timestamp', 'ordernumber', 'asins']
+        self.ReportInfo = ['username', 'password', 'cookies', 'proxy', 'customername', 'shippingaddress','billingaddress','Timestamp', 'ordernumber', 'asins']
         self.ReportErrorInfo = ['errorcode', 'retrynumber']
         self.FatalError = ['VerifyEmail', 'BadPassword', 'FixAddress', 'AddressNotMatch', 'GiftCardUsed', 'BadGiftCard']
         self.TaskSync = False
@@ -57,7 +58,9 @@ class PlaceOrder(TaskManager):
         self.ThreadNumber = 1
         self.MaxRetry = 3
         self.ProxyEnable = True
+        self.AuthProxy = True
         self.ProxyTimeout = 60
+        self.SubMaxRetry = 2
         self.TaskName = 'PlaceOrder_auto'
         self.TaskInfos = OrderTaskTable
         for i in range(len(self.TaskInfos)):
@@ -68,12 +71,12 @@ class PlaceOrder(TaskManager):
 
     # overiding method
     def SubTask(self, driver, TaskInfo):
-        driver.implicitly_wait(3)
+        driver.implicitly_wait(5)
         Task = AmazonFunction(driver, TaskInfo)
         TaskInfo['ordernumber'] = ''
         Task.FunctionInfo.update(TaskInfo['shippingaddress'])
         Task.speed = randint(50, 100)
-        EmailDomain = '@foxairmail.com'
+        EmailDomain = '@blessmindy.com'
         if not Task.CreatAcount(EmailDomain):
             return False
         time.sleep(5)
@@ -84,6 +87,7 @@ class PlaceOrder(TaskManager):
         Task.FunctionInfo.update(TaskInfo['shippingaddress'])
         if not Task.SetAddress():
             return False
+        SearchTask = AmazonPages(driver)
         for asin in TaskInfo['asins']:
             Task.FunctionInfo['asin'] = asin
             Task.FunctionInfo.update(ProductFrame.loc[Task.FunctionInfo['asin']].to_dict())
@@ -91,7 +95,7 @@ class PlaceOrder(TaskManager):
             Task.FunctionInfo['highprice'] = str(round((float(Task.FunctionInfo['buyboxprice']) + 0.01), 2))
             #Task.FunctionInfo['lowprice'] = Task.FunctionInfo['buyboxprice']
             #Task.FunctionInfo['highprice'] = Task.FunctionInfo['buyboxprice']
-            if not Task.SearchProduct():
+            if not SearchTask.SearchAndView(TaskInfo):
                 print('Search production fail...')
                 # Fatal error if not found in any page  TBD
                 TaskInfo['errorcode'] = 'SearchFail'
