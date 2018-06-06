@@ -1638,7 +1638,8 @@ class AmazonFunction(page_scroll):
         self.FunctionInfo['status'] = False
         Lastname = names.get_last_name()
         Firstname = names.get_first_name()
-        self.FunctionInfo['customername'] = Firstname + " " + Lastname
+        if not self.FunctionInfo['customername']:
+            self.FunctionInfo['customername'] = Firstname + " " + Lastname
         if self.NewRandomAccount:
             self.FunctionInfo['username'] = Firstname + Lastname + str(randint(0, 999)) + EmailDomain
             self.FunctionInfo['password'] = ''.join(random.sample(chars, 10))

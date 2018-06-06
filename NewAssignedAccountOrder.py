@@ -78,7 +78,6 @@ class PlaceOrder(TaskManager):
         self.SubMaxRetry = 2
         self.TaskName = 'PlaceOrder_auto'
         self.TaskInfos = OrderTaskTable
-        tt = AccountFrame
         for item in self.TaskInfos:
             item.update({'cookies': ''})
             item.update(AccountFrame.loc[item['username']].to_dict())
