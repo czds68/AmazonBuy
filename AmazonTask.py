@@ -7,6 +7,7 @@ import random
 import parseinfo
 from random import randint
 from datetime import datetime
+from amazon_pages import AmazonPages
 
 def make_order_info_0(RawInfo):
     order_info = {}
@@ -188,7 +189,9 @@ class TestSearch(TaskManager):
         Task.speed = randint(120, 160)
         Task.FunctionInfo['lowprice'] = str(round((float(Task.FunctionInfo['buyboxprice']) - 0.01), 2))
         Task.FunctionInfo['highprice'] = str(round((float(Task.FunctionInfo['buyboxprice']) + 0.01), 2))
-        if not Task.SearchProduct():
+        SearchTask = AmazonPages(driver)
+        #if not Task.SearchProduct():
+        if not SearchTask.SearchAndView(TaskInfo):
             print('Search production fail...')
             # Fatal error if not found in any page  TBD
             TaskInfo['errorcode'] = 'SearchFail'

@@ -141,6 +141,7 @@ class AmazonPages(page_scroll):
             department_element = self.driver.find_element_by_id('searchDropdownBox')
             self.ScrollToElement(department_element)
             select = Select(department_element)
+            tt = DepartmentTable[department]
             select.select_by_value(DepartmentTable[department])
             return True
         except:
@@ -197,16 +198,16 @@ class AmazonPages(page_scroll):
 
     def FindProduct(self, asin, ClickProduct =True):
         try:
-            PageItems = self.driver.find_elements_by_class_name("a-link-normal") + self.driver.find_elements_by_class_name("a-button-inner")
+            PageItems = self.driver.find_elements_by_class_name("a-link-normal") + \
+                        self.driver.find_elements_by_class_name("a-button-text")
             for item in PageItems:
-                if not item:
-                    continue
-                if (('dp/' + asin) in item.get_attribute("href")) and item.is_enabled() and item.is_displayed():
-                    print('Production found!')
-                    if ClickProduct:
-                        self.ScrollToElement(item)
-                        item.click()
-                    return True
+                if item:
+                    if item.get_attribute("href") and item.is_enabled() and item.is_displayed():
+                        if (('dp/' + asin) in item.get_attribute("href")):
+                            print('Production found!')
+                            if ClickProduct:
+                                self.ClickElement(item)
+                                return True
         except:
             pass
         return False
