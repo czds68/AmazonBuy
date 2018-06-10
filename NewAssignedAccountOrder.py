@@ -65,7 +65,7 @@ ProductFrame.set_index('asin', inplace=True)
 class PlaceOrder(TaskManager):
     def __init__(self):
         TaskManager.__init__(self)
-        self.ReportInfo = ['username', 'password', 'cookies', 'proxy', 'customername', 'shippingaddress', 'billingaddress', 'Timestamp', 'ordernumber', 'asins']
+        self.ReportInfo = ['username', 'password', 'cookies', 'proxy', 'Timestamp', 'ordernumber', 'asins']
         self.ReportErrorInfo = ['errorcode', 'retrynumber']
         self.FatalError = ['VerifyEmail', 'BadPassword', 'FixAddress', 'AddressNotMatch', 'GiftCardUsed', 'BadGiftCard']
         self.TaskSync = False

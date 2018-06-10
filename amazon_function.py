@@ -19,6 +19,7 @@ import names
 from random import randint
 import os
 from verificationcode import getverifycode
+from AmazonTables import SMatch
 
 
 chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789'
@@ -975,9 +976,9 @@ class AmazonFunction(page_scroll):
         # select country for address
         # add new address
         print('Address set: start to add address')
-        if (self.Replace.sub(repl='',string=self.FunctionInfo['fullname'].lower()) not in AllAddressText) or \
-                (self.Replace.sub(repl='',string=self.FunctionInfo['address'].lower()) not in AllAddressText) or \
-                (self.Replace.sub(repl='',string=self.FunctionInfo['phonenumber'])) not in AllAddressText:
+        if SMatch(self.Replace.sub(repl='',string=self.FunctionInfo['fullname'].lower()), AllAddressText) or \
+            SMatch(self.Replace.sub(repl='',string=self.FunctionInfo['address'].lower()), AllAddressText) or \
+            SMatch(self.Replace.sub(repl='',string=self.FunctionInfo['phonenumber']), AllAddressText):
             try:
                 self.driver.find_element_by_id('ya-myab-address-add-link').click()
                 #self.driver.get("https://www.amazon.com/a/addresses/add?ref=ya_address_book_add_button")
@@ -1068,9 +1069,9 @@ class AmazonFunction(page_scroll):
         # check default setting
         try:
             AddressText = self.Replace.sub(repl='',string=self.driver.find_element_by_class_name("address-section-with-default").text.lower())
-            if self.Replace.sub(repl='',string=self.FunctionInfo['fullname'].lower()) in AddressText and \
-                    self.Replace.sub(repl='', string=self.FunctionInfo['address'].lower()) in AddressText and \
-                    self.Replace.sub(repl='', string=self.FunctionInfo['phonenumber']) in AddressText:
+            if SMatch(self.Replace.sub(repl='',string=self.FunctionInfo['fullname'].lower()) , AddressText) and \
+                SMatch(self.Replace.sub(repl='', string=self.FunctionInfo['address'].lower()), AddressText) and \
+                SMatch(self.Replace.sub(repl='', string=self.FunctionInfo['phonenumber']), AddressText):
                 print('Address set done!')
                 self.FunctionInfo['errorcode'] = 'AddressSetPass'
                 self.FunctionInfo['status'] = True
@@ -1242,7 +1243,9 @@ class AmazonFunction(page_scroll):
                 AddressText = self.Replace.sub(repl='',string=AddressNames[i].text.lower()) + \
                               self.Replace.sub(repl='', string=AddressPhones[i].text.lower()) + \
                               self.Replace.sub(repl='', string=AddressLine1[i].text.lower())
-                if FullNameLower in AddressText and PhonenumberLower in AddressText and AddressLower in AddressText:
+                if SMatch(FullNameLower, AddressText) \
+                        and SMatch(PhonenumberLower , AddressText) \
+                        and SMatch(AddressLower , AddressText):
                     self.ClickElement(AddressButtons[i])
                     time.sleep(3)
                     AddressSet = True
@@ -1258,14 +1261,14 @@ class AmazonFunction(page_scroll):
                 AddressName = ''
                 AddressLine1 = ''
             AddressText = AddressName + AddressLine1
-            if self.Replace.sub(repl='',string=self.FunctionInfo['fullname'].lower()) in AddressText \
-                    and self.Replace.sub(repl='',string=self.FunctionInfo['address'].lower()) in AddressText:
+            if SMatch(self.Replace.sub(repl='',string=self.FunctionInfo['fullname'].lower()), AddressText) \
+                    and SMatch(self.Replace.sub(repl='',string=self.FunctionInfo['address'].lower()), AddressText):
                 AddressSet = True
             else:
                 AddressBook = self.driver.find_elements_by_xpath("//span[@class='a-label a-radio-label']")
                 for i in range(len(AddressBook)):
                     AddressBookText = self.Replace.sub(repl='',string=AddressBook[i].text.lower())
-                    if FullNameLower in AddressBookText and AddressLower in AddressBookText:
+                    if SMatch(FullNameLower , AddressBookText) and SMatch(AddressLower, AddressBookText):
                         self.ClickElement(self.driver.find_element_by_id("orderSummaryPrimaryActionBtn-announce"))
                         AddressSet = True
                         break
@@ -1431,7 +1434,7 @@ class AmazonFunction(page_scroll):
         # check shipping address
         try:
             ShippingAddress = self.Replace.sub(repl='',string=self.driver.find_element_by_id('desktop-shipping-address-div').text.lower())
-            if FullNameLower in ShippingAddress and PhonenumberLower in ShippingAddress and AddressLower in ShippingAddress:
+            if SMatch(FullNameLower, ShippingAddress) and SMatch(PhonenumberLower, ShippingAddress) and SMatch(AddressLower, ShippingAddress):
                 print('shipping address checked..')
             else:
                 print('Place order fail: shippingaddress not right')

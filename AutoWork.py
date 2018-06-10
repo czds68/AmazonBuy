@@ -127,6 +127,7 @@ class PlaceOrder(TaskManager):
             SubRetry += 1
             if SubRetry > self.SubMaxRetry:
                 return False
+        TaskInfo['cookies'] = json.dumps(driver.get_cookies())
         return True
 
 if __name__ == "__main__":
