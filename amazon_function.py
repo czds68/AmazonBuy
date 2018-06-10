@@ -976,9 +976,9 @@ class AmazonFunction(page_scroll):
         # select country for address
         # add new address
         print('Address set: start to add address')
-        if SMatch(self.Replace.sub(repl='',string=self.FunctionInfo['fullname'].lower()), AllAddressText) or \
-            SMatch(self.Replace.sub(repl='',string=self.FunctionInfo['address'].lower()), AllAddressText) or \
-            SMatch(self.Replace.sub(repl='',string=self.FunctionInfo['phonenumber']), AllAddressText):
+        if not SMatch(self.Replace.sub(repl='',string=self.FunctionInfo['fullname'].lower()), AllAddressText) or \
+            not SMatch(self.Replace.sub(repl='',string=self.FunctionInfo['address'].lower()), AllAddressText) or \
+            not SMatch(self.Replace.sub(repl='',string=self.FunctionInfo['phonenumber']), AllAddressText):
             try:
                 self.driver.find_element_by_id('ya-myab-address-add-link').click()
                 #self.driver.get("https://www.amazon.com/a/addresses/add?ref=ya_address_book_add_button")
