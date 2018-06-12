@@ -1,6 +1,8 @@
 from difflib import SequenceMatcher
 
 def SMatch(StrA,StrB, Ratio = 0.8, CaseSensitive = False):
+    if not StrA or not StrB:
+        return False
     if CaseSensitive == False:
         TestA = StrA.lower()
         TestB = StrB.lower()
