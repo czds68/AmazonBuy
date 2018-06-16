@@ -417,6 +417,11 @@ class AmazonPages(page_scroll):
             return False
         if not self.SubmitKeyword(Info['keyword']):
             return False
+        # show all result
+        try:
+            self.ClickElement(self.driver.find_element_by_link_text('Show all results'))
+        except:
+            pass
         self.ViewWholePage(ScrollSpeed=[20, 60])
         if not self.SetPrice(Info['lowprice'], Info['highprice']):
             return False

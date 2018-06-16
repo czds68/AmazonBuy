@@ -16,10 +16,12 @@ def SMatch(StrA,StrB, Ratio = 0.8, CaseSensitive = False):
 
     DiffResult = SequenceMatcher(None,TestA,TestB).get_opcodes()
     SameCounter = 0
+    SplitCounter = 0
     for diff in DiffResult:
         if diff[0] == 'equal':
-            SameCounter += diff[2] - diff[1] + 1
-    if SameCounter/ShorterLenght >= Ratio:
+            SplitCounter += 1
+            SameCounter += diff[2] - diff[1]
+    if (SameCounter/ShorterLenght >= Ratio) or (SplitCounter <= 3):
         return True
     else:
         return False

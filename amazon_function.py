@@ -676,8 +676,8 @@ class AmazonFunction(page_scroll):
         try:
             self.driver.get("https://www.amazon.com/gp/css/homepage.html/ref=nav_youraccount_btn")
             WebDriverWait(self.driver, 20, 0.5, ignored_exceptions=TimeoutException). \
-                until(EC.visibility_of_element_located((By.XPATH, "//h3[contains(text(),'security')]")))
-            self.driver.find_element_by_xpath("//h3[contains(text(),'security')]").click()
+                until(EC.visibility_of_element_located((By.XPATH, "//div[@data-card-identifier='SignInAndSecurity']")))
+            self.driver.find_element_by_xpath("//div[@data-card-identifier='SignInAndSecurity']").click()
         except:
             print('ChangeEmail: fail to view security page')
             print(traceback.print_exc())
@@ -698,8 +698,8 @@ class AmazonFunction(page_scroll):
         try:
             self.driver.get("https://www.amazon.com/gp/css/homepage.html/ref=nav_youraccount_btn")
             WebDriverWait(self.driver, 20, 0.5, ignored_exceptions=TimeoutException). \
-                until(EC.visibility_of_element_located((By.XPATH, "//h3[contains(text(),'security')]")))
-            self.driver.find_element_by_xpath("//h3[contains(text(),'Payment options')]").click()
+                until(EC.visibility_of_element_located((By.CLASS_NAME, "//div@[data-card-identifier='PaymentOptions']")))
+            self.driver.find_element_by_xpath("//div@[data-card-identifier='PaymentOptions']").click()
         except:
             print('Add Credit card: fail to view payment page')
             #print(traceback.print_exc())
@@ -771,9 +771,9 @@ class AmazonFunction(page_scroll):
 
         # set billing address
         try:
-            WebDriverWait(self.driver, 5, 0.5, ignored_exceptions=TimeoutException). \
+            WebDriverWait(self.driver, 15, 0.5, ignored_exceptions=TimeoutException). \
                 until(EC.visibility_of_element_located((By.CLASS_NAME, "pmts-add-address")))
-            AddAddress = self.driver.find_element_by_xpath("//input[@name='ppw-widgetEvent:ShowAddAddressEvent']")
+            AddAddress = self.driver.find_element_by_xpath('//input[@name="ppw-widgetEvent:ShowAddAddressEvent"]')
             self.ClickElement(AddAddress)
             time.sleep(2)
         except:
@@ -808,7 +808,7 @@ class AmazonFunction(page_scroll):
 
         # No use Original address
         try:
-            self.click_on_element(self.driver.find_element_by_class_name('pmts-use-this-address'))
+            self.driver.find_element_by_xpath('//input[@name="ppw-widgetEvent:UseOriginalAddressEvent"]').click()
         except:
             pass
 
