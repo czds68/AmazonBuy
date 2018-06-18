@@ -698,8 +698,8 @@ class AmazonFunction(page_scroll):
         try:
             self.driver.get("https://www.amazon.com/gp/css/homepage.html/ref=nav_youraccount_btn")
             WebDriverWait(self.driver, 20, 0.5, ignored_exceptions=TimeoutException). \
-                until(EC.visibility_of_element_located((By.CLASS_NAME, "//div@[data-card-identifier='PaymentOptions']")))
-            self.driver.find_element_by_xpath("//div@[data-card-identifier='PaymentOptions']").click()
+                until(EC.visibility_of_element_located((By.XPATH, "//div[@data-card-identifier='PaymentOptions']")))
+            self.driver.find_element_by_xpath("//div[@data-card-identifier='PaymentOptions']").click()
         except:
             print('Add Credit card: fail to view payment page')
             #print(traceback.print_exc())
@@ -808,7 +808,7 @@ class AmazonFunction(page_scroll):
 
         # No use Original address
         try:
-            self.driver.find_element_by_xpath('//input[@name="ppw-widgetEvent:UseOriginalAddressEvent"]').click()
+            self.ClickElement(self.driver.find_element_by_xpath('//input[@name="ppw-widgetEvent:UseOriginalAddressEvent"]'))
         except:
             pass
 

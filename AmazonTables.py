@@ -1,6 +1,6 @@
 from difflib import SequenceMatcher
 
-def SMatch(StrA,StrB, Ratio = 0.8, CaseSensitive = False):
+def SMatch(StrA,StrB, Ratio = 0.5, CaseSensitive = False):
     if not StrA or not StrB:
         return False
     if CaseSensitive == False:
@@ -21,7 +21,7 @@ def SMatch(StrA,StrB, Ratio = 0.8, CaseSensitive = False):
         if diff[0] == 'equal':
             SplitCounter += 1
             SameCounter += diff[2] - diff[1]
-    if (SameCounter/ShorterLenght >= Ratio) or (SplitCounter <= 3):
+    if (SameCounter/ShorterLenght >= Ratio) and (SplitCounter <= 3):
         return True
     else:
         return False
