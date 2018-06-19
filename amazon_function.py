@@ -1440,7 +1440,7 @@ class AmazonFunction(page_scroll):
                 print('Place order fail: shippingaddress not right')
                 self.FunctionInfo['errorcode'] = 'PlaceOrderAddressError'
                 self.FunctionInfo['status'] = False
-                return False
+                #return False
         except:
             print('Place order fail: shippingaddress not found')
             self.FunctionInfo['errorcode'] = 'PlaceOrderAddressFail'
