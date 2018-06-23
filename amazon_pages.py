@@ -131,7 +131,7 @@ class AmazonPages(page_scroll):
         self.ViewMoreAnswer(ScrollSpeed=[5, 20])
         while (datetime.now() - StartTime).seconds < timeout:
             self.WalkAround(RetryNum=[1, 2], ScrollSpeed=[5, 15])
-            time.sleep(randint(10, 30))
+            time.sleep(randint(3, 15))
         return True
 
 
