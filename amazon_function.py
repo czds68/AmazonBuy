@@ -649,11 +649,15 @@ class AmazonFunction(page_scroll):
         try:
             self.driver.find_element_by_id("ap_password").send_keys(self.FunctionInfo['password'])
             self.driver.find_element_by_id("signInSubmit").click()
-            self.driver.find_element_by_id('auth-error-message-box')
-            print('Login: Your password is incorrect')
-            self.FunctionInfo['errorcode'] = 'BadPassword'
-            self.FunctionInfo['status'] = False
-            return False
+        except:
+            pass
+
+        try:
+            if self.driver.find_element_by_id('auth-error-message-box'):
+                print('Login: Your password is incorrect')
+                self.FunctionInfo['errorcode'] = 'BadPassword'
+                self.FunctionInfo['status'] = False
+                return False
         except:
             pass
 
