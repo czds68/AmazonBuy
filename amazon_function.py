@@ -1106,6 +1106,18 @@ class AmazonFunction(page_scroll):
         except:
             pass
 
+    def SelectSizeOfProduct(self):
+        # noinspection PyBroadException
+        try:
+            SizeElement = self.driver.find_element_by_id('native_dropdown_selected_size_name')
+            self.ScrollToElement(SizeElement)
+            select = Select(SizeElement)
+            select.select_by_visible_text(self.FunctionInfo['size'])
+            return True
+        except:
+            print("Select size of function fail!")
+            return False
+
     def AddCart(self):
         self.FunctionInfo['status'] = False
         # no danate
@@ -1122,6 +1134,8 @@ class AmazonFunction(page_scroll):
             return False
 
         self.SelectAsinFromBuyBox(self.FunctionInfo['asin'])
+        self.SelectSizeOfProduct()
+
         try:
             WebDriverWait(self.driver, 20, 0.5, ignored_exceptions=TimeoutException) \
                 .until(EC.visibility_of_element_located((By.ID, "feature-bullets")))
