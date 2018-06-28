@@ -69,7 +69,6 @@ class PlaceOrder(TaskManager):
         self.TaskInfos = AccountTable
         for item in self.TaskInfos:
             item.update({'cookies': ''})
-            item.update(AccountFrame.loc[item['username']].to_dict())
             item.update({'billingaddress':FinanceFrame.loc[item['username']].to_dict()})
             item.update({'shippingaddress':AddressFrame.loc[item['username']].to_dict()})
         pass
