@@ -13,7 +13,6 @@ import pandas as pd
 
 FinanceFile     = './amazonbuy_database/Finance.csv'
 AddressFile     = './amazonbuy_database/shippingaddress.csv'
-OrderTaskFile   = './amazonbuy_database/ordertask.csv'
 ProductFile     = './amazonbuy_database/productinfo.csv'
 AccountFile = './amazonbuy_database/AccountInfo.csv'
 
@@ -23,7 +22,9 @@ AccountFrame.dropna(how='all', inplace=True)
 #AccountFrame.dropna(axis=1, how='all', inplace=True)
 #AccountFrame.dropna(how='any', inplace=True)
 AccountFrame.fillna('',inplace=True)
-AccountFrame.set_index('username', inplace=True)
+AccountTable = []
+for num, item in AccountFrame.iterrows():
+    AccountTable.append(item.to_dict())
 
 AddressFrame = pd.DataFrame(pd.read_csv(AddressFile,header=0, dtype=str))
 AddressFrame.dropna(how='all', inplace=True)
@@ -31,18 +32,6 @@ AddressFrame.dropna(axis=1, how='any', inplace=True)
 AddressFrame.dropna(how='all', inplace=True)
 AddressFrame.fillna(value='',inplace=True)
 AddressFrame.set_index('username', inplace=True)
-
-OrderTaskFrame = pd.DataFrame(pd.read_csv(OrderTaskFile,header=0, dtype=str))
-OrderTaskFrame.dropna(how='all', inplace=True)
-OrderTaskFrame.dropna(axis=1, how='all', inplace=True)
-OrderTaskFrame.set_index('username', inplace=True)
-OrderTaskTable = []
-for name, item in OrderTaskFrame.iterrows():
-    OrderTaskInfo = {}
-    OrderTaskInfo['username'] = name
-    item.dropna(inplace=True)
-    OrderTaskInfo['asins'] =  list(item)
-    OrderTaskTable.append(OrderTaskInfo)
 
 FinanceFrame = pd.DataFrame(pd.read_csv(FinanceFile,header=0, dtype=str))
 FinanceFrame.drop_duplicates(inplace=True)
@@ -76,8 +65,8 @@ class PlaceOrder(TaskManager):
         self.AuthProxy = True
         self.ProxyTimeout = 60
         self.SubMaxRetry = 2
-        self.TaskName = 'PlaceOrder_auto'
-        self.TaskInfos = OrderTaskTable
+        self.TaskName = 'Account View'
+        self.TaskInfos = AccountTable
         for item in self.TaskInfos:
             item.update({'cookies': ''})
             item.update(AccountFrame.loc[item['username']].to_dict())
