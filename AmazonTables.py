@@ -1,6 +1,6 @@
 from difflib import SequenceMatcher
-
-def SMatch(StrA,StrB, Ratio = 0.6, CaseSensitive = False):
+import re
+def SMatch(StrA,StrB, Ratio = 0.65, CaseSensitive = False, SubSymbol = True,MatchLengthRate = 1.8):
     if not StrA or not StrB:
         return False
     if CaseSensitive == False:
@@ -9,22 +9,38 @@ def SMatch(StrA,StrB, Ratio = 0.6, CaseSensitive = False):
     else:
         TestA = StrA
         TestB = StrB
-    if len(StrA) > len(StrB):
-        ShorterLenght = len(StrB)
+    if SubSymbol:
+        Replace = re.compile("[ \!\@\#\$\%\^\&\*\(\)_+\{\}|:\"<>\?\-=\[\]\\;',./\']")
+        TestA = Replace.sub(repl='', string=TestA)
+        TestB = Replace.sub(repl='', string=TestB)
+    if len(TestA) > len(TestB):
+        ShorterLenght = len(TestB)
+        LongerLength = len(TestA)
+        ShortString = TestB
+        LongerString = TestA
     else:
-        ShorterLenght = len(StrA)
-
-    DiffResult = SequenceMatcher(None,TestA,TestB).get_opcodes()
-    SameCounter = 0
-    SplitCounter = 0
-    for diff in DiffResult:
-        if diff[0] == 'equal':
-            SplitCounter += 1
-            SameCounter += diff[2] - diff[1]
-    if (SameCounter/ShorterLenght >= Ratio) and (SplitCounter <= 3):
-        return True
-    else:
-        return False
+        ShorterLenght = len(TestA)
+        LongerLength = len(TestB)
+        ShortString = TestA
+        LongerString = TestB
+    StartOffset = 0
+    while True:
+        EnfOffset = StartOffset + int(float(ShorterLenght * MatchLengthRate))
+        DiffA = ShortString
+        DiffB = LongerString[StartOffset:EnfOffset]
+        DiffResult = SequenceMatcher(None, DiffA, DiffB).get_opcodes()
+        SameCounter = 0
+        SplitCounter = 0
+        for diff in DiffResult:
+            if diff[0] == 'equal':
+                SplitCounter += 1
+                SameCounter += diff[2] - diff[1]
+        if (SameCounter / ShorterLenght >= Ratio) and (SplitCounter <= 3):
+            return True
+        if EnfOffset > LongerLength:
+            break
+        StartOffset += 1
+    return False
 
 
 chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789'
