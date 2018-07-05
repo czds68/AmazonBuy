@@ -1420,6 +1420,14 @@ class AmazonFunction(page_scroll):
         except:
             pass
         '''
+
+        try:
+            self.driver.find_element_by_class_name('payment-selected').click()
+            self.driver.find_element_by_id('addCreditCardNumber').send_keys(self.FunctionInfo['ccnumber'])
+            self.driver.find_element_by_id('confirm-card').click()
+        except:
+            pass
+
         # continue to pay
         try:
             self.driver.find_element_by_id('order-summary-container').find_element_by_id('continue-top').click()

@@ -15,6 +15,7 @@ AccountFile     = './amazonbuy_database/AccountInfo.csv'
 AddressFile     = './amazonbuy_database/shippingaddress.csv'
 OrderTaskFile   = './amazonbuy_database/ordertask.csv'
 ProductFile     = './amazonbuy_database/productinfo.csv'
+FinanceFile     = './amazonbuy_database/Finance.csv'
 
 ProductFrame = pd.DataFrame(pd.read_csv(ProductFile,header=0, dtype=str))
 ProductFrame.drop_duplicates(subset='asin', inplace=True)
@@ -56,6 +57,14 @@ for name, item in OrderTaskFrame.iterrows():
     OrderTaskInfo.update({'asins': list(item)})
     OrderTaskTable.append(OrderTaskInfo)
 
+FinanceFrame = pd.DataFrame(pd.read_csv(FinanceFile,header=0, dtype=str))
+FinanceFrame.drop_duplicates(inplace=True)
+FinanceFrame.dropna(how='all', inplace=True)
+FinanceFrame.dropna(axis=1, how='all', inplace=True)
+#FinanceFrame.dropna(how='any', inplace=True)
+FinanceFrame.fillna(value='',inplace=True)
+FinanceFrame.set_index('username', inplace=True)
+
 # check whether already placed order
 
 class PlaceOrder(TaskManager):
@@ -76,6 +85,7 @@ class PlaceOrder(TaskManager):
         self.TaskInfos = OrderTaskTable
         for item in self.TaskInfos:
             item.update(AccountFrame.loc[item['username']].to_dict())
+            item.update(FinanceFrame.loc[item['username']].to_dict())
             item.update(AddressFrame.loc[item['username']].to_dict())
         pass
 
