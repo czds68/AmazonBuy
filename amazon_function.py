@@ -1422,15 +1422,17 @@ class AmazonFunction(page_scroll):
         '''
 
         try:
-            self.driver.find_element_by_class_name('payment-selected').click()
+            self.driver.find_element_by_class_name('payment-row').click()
             self.driver.find_element_by_id('addCreditCardNumber').send_keys(self.FunctionInfo['ccnumber'])
             self.driver.find_element_by_id('confirm-card').click()
+            time.sleep(2)
         except:
             pass
 
         # continue to pay
         try:
-            self.driver.find_element_by_id('order-summary-container').find_element_by_id('continue-top').click()
+            #self.driver.find_element_by_id('order-summary-container').find_element_by_id('continue-top').click()
+            self.driver.find_element_by_id('continue-top').click()
             #time.sleep(5)
         except:
             pass
