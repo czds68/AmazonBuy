@@ -35,11 +35,11 @@ class TaskManager():
 
         # Webdriver setting
         self.LoadImage = False
-        self.FakeAgent = True
+        self.FakeAgent = False
 
         # Proxy Setting
         #self.ProxyUrl = 'http://webapi.http.zhimacangku.com/getip?num=5&type=1&pro=&city=0&yys=0&port=11&time=1&ts=0&ys=0&cs=0&lb=1&sb=0&pb=4&mr=1&regions='
-        self.ProxyUrl = 'http://webapi.http.zhimacangku.com/getip?num=5&type=1&pro=&city=0&yys=0&port=11&time=2&ts=0&ys=0&cs=0&lb=1&sb=0&pb=4&mr=1&regions='
+        self.ProxyUrl = 'http://webapi.http.zhimacangku.com/getip?num=5&type=1&pro=&city=0&yys=0&port=11&time=1&ts=0&ys=0&cs=0&lb=1&sb=0&pb=4&mr=1&regions='
         #self.ProxyUrl = 'http://api.xdaili.cn/xdaili-api//privateProxy/applyStaticProxy?spiderId=c0e4dc4f348e4dc9b791f96880ca912e&returnType=1&count=5'
         self.ProxyPool = []
         self.ProxyTime = datetime.now()
@@ -85,6 +85,7 @@ class TaskManager():
             TaskInfo['status'] = False
             TaskInfo['errorcode'] = 'Start'
             TaskInfo['Timestamp'] = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+            if not TaskInfo['country']: TaskInfo['country'] = 'us'
             self.TaskQueue.put(TaskInfo)
 
     # A dummy subtask

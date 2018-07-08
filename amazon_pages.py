@@ -44,7 +44,7 @@ class AmazonPages(page_scroll):
                 self.sroll_to_position(randint(0, PageSize))
             return True
         except:
-            print(traceback.print_exc())
+            #print(traceback.print_exc())
             return False
 
 
@@ -79,13 +79,13 @@ class AmazonPages(page_scroll):
     def RandomClick(self, exclude = 'xxxxxxxxxx'):
         try:
             # click Items
-            while True:
-                PageItems = self.driver.find_elements_by_class_name("a-link-normal")
-                SelectedItem = random.sample(PageItems, 1)[0]
+            PageItems = self.driver.find_elements_by_class_name("a-link-normal")
+            random.shuffle(PageItems)
+            for SelectedItem in PageItems:
                 if ('/dp/' in SelectedItem.get_attribute("href") or \
-                    '/gp/slredirect/' in SelectedItem.get_attribute("href")) and \
-                    SelectedItem.is_enabled() and SelectedItem.is_displayed() and \
-                    (exclude not in SelectedItem.get_attribute("href")):
+                        '/gp/slredirect/' in SelectedItem.get_attribute("href")) and \
+                        SelectedItem.is_enabled() and SelectedItem.is_displayed() and \
+                        (exclude not in SelectedItem.get_attribute("href")):
                     self.move_to_element(SelectedItem)
                     SelectedItem.click()
                     return True
@@ -102,7 +102,7 @@ class AmazonPages(page_scroll):
         except:
             return False
 
-    def ViewOtherProduct(self, asin):
+    def ViewOtherProduct(self, asin = 'XXXXXXXX'):
         urlreccored = self.driver.current_url
         self.RandomClick(exclude = asin)
         self.ViewWholePage(ScrollSpeed=[20, 60])
@@ -120,11 +120,14 @@ class AmazonPages(page_scroll):
         StartTime = datetime.now()
         if not self.ViewWholePage(ScrollSpeed=[5, 20]):
             return False
+        print('View all page of Our Product')
         if not self.WalkAround(RetryNum=[1, 5], ScrollSpeed=[5, 20]):
             return False
+        print('Walk around in our Product page')
         #if not self.view_thumbnail():
         #    return False
         self.ViewReviewer(ScrollSpeed=[5, 20])
+        print('View Reviewer of our product')
         if (datetime.now() - StartTime).seconds > timeout:
             return True
         self.ViewDetailAnswers(ScrollSpeed=[5, 20])
@@ -132,6 +135,7 @@ class AmazonPages(page_scroll):
         while (datetime.now() - StartTime).seconds < timeout:
             self.WalkAround(RetryNum=[1, 2], ScrollSpeed=[5, 15])
             time.sleep(randint(3, 15))
+        print('View our product done')
         return True
 
 
@@ -263,7 +267,7 @@ class AmazonPages(page_scroll):
                     self.ScrollToElement(self.driver.find_element_by_id("reviews-medley-footer"))
             return True
         except:
-            print(traceback.print_exc())
+            #print(traceback.print_exc())
             print('Error happen when view reviewer!')
             return False
 
@@ -408,7 +412,7 @@ class AmazonPages(page_scroll):
 
     def SearchProduct(self, Info, PageNum = 20, ClickProduct =True):
         try:
-            WebDriverWait(self.driver, 10, 0.5, ignored_exceptions=TimeoutException) \
+            WebDriverWait(self.driver, 20, 0.5, ignored_exceptions=TimeoutException) \
                 .until(EC.visibility_of_element_located((By.ID, "nav-search")))
         except:
             print('No search bar!')
@@ -435,11 +439,19 @@ class AmazonPages(page_scroll):
             if not self.GoToNextPage():
                 return False
 
-    def SearchAndView(self, Info):
+    def SearchAndView(self, Info, timer = randint(300,600)):
         if not self.SearchProduct(Info):
+            Info['status'] = False
+            Info['errorcode'] = 'SearchFail'
             return False
-        timer = randint(300,600)
+        print('Start viewing our page')
         if not self.ViewOurProduct(timeout=timer):
+            Info['status'] = False
+            Info['errorcode'] = 'ViewOurFail'
             return False
-        #self.ViewOtherProduct(asin=Info['asin'])
+        print('Click a Link and back in our page')
+        self.ViewOtherProduct(asin=Info['asin'])
+        self.ViewWholePage()
+        Info['status'] = True
+        Info['errorcode'] = 'ViewDone'
         return True

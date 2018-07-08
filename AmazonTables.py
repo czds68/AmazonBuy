@@ -45,6 +45,16 @@ def SMatch(StrA,StrB, Ratio = 0.65, CaseSensitive = False, SubSymbol = True,Matc
 
 chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789'
 
+
+def URLDomains(Country = 'us'):
+    URLTables = {'us': 'https://www.amazon.com/',
+                'ca': 'https://www.amazon.ca/',
+                'uk': 'https://www.amazon.co.uk/'}
+    if URLTables[Country]:
+        return URLTables[Country]
+    else:
+        return URLTables['us']
+
 DepartmentTable = {'Magazine Subscriptions': 'search-alias=magazines',
                    'Appliances': 'search-alias=appliances',
                    'Credit and Payment Cards': 'search-alias=financial',

@@ -20,7 +20,7 @@ from random import randint
 import os
 from verificationcode import getverifycode
 from AmazonTables import SMatch
-
+import AmazonTables
 
 chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789'
 class AmazonFunction(page_scroll):
@@ -37,9 +37,6 @@ class AmazonFunction(page_scroll):
         self.SearchOnly = False
         self.VerifyEnhance = True
         self.NewRandomAccount = True
-        self.domain_url = {'us': 'https://www.amazon.com/',
-                           'ca': 'https://www.amazon.ca/',
-                           'uk': 'https://www.amazon.co.uk/'}
         self.captcha = CaptchaUpload('f4ab06a8e3e5be77134312d55c7a7bb4')
         self.Replace = re.compile('[ \.:#,-]')
 
@@ -490,18 +487,19 @@ class AmazonFunction(page_scroll):
             except:
                 pass
         try:
-            lowprice = re.findall('[\$£][ 0-9\.]+', price_element.text)
-            lowprice = list(filter(lambda x : x != '', re.split('[\$£ ]+', lowprice[0])))[0]
-            highprice = str(round((float(lowprice) + 0.01),2))
-            #lowprice = str(round((float(lowprice)),0))
-            price = [lowprice, highprice]
+            pricetext = re.findall('[\$£][ 0-9\.]+', price_element.text)
+            buyboxprice = list(filter(lambda x : x != '', re.split('[\$£ ]+', pricetext[0])))[0]
+            #lowprice = str(round((float(buyboxprice)),0))
+            lowprice = buyboxprice
+            highprice = str(round((float(buyboxprice) + 0.05),2))
+            price = {'buyboxprice': buyboxprice, 'lowprice':lowprice, 'highprice': highprice}
             return price
         except:
             print('Price url error1:::' + str(datetime.now()))
             return False
 
     def login(self):
-        try: self.driver.get("https://www.amazon.com/")
+        try: self.driver.get(AmazonTables.URLDomains(self.FunctionInfo['country']))
         except: pass
         time.sleep(10)
         if self.FunctionInfo['cookies']:
@@ -515,10 +513,11 @@ class AmazonFunction(page_scroll):
                 self.FunctionInfo['errorcode'] = 'CookieSetFail'
                 self.FunctionInfo['status'] = False
                 return False
-            self.driver.get("https://www.amazon.com/")
+            self.driver.get(AmazonTables.URLDomains(self.FunctionInfo['country']))
             time.sleep(5)
         try:
-            self.driver.get("https://www.amazon.com/gp/your-account/order-history?ref_=ya_d_c_yo")
+            self.driver.get(AmazonTables.URLDomains(self.FunctionInfo['country']) +
+                            "gp/your-account/order-history?ref_=ya_d_c_yo")
         except:
             print('Loggin: Fail because Net...')
             self.FunctionInfo['errorcode'] = 'LogginNetFail'
@@ -678,7 +677,8 @@ class AmazonFunction(page_scroll):
 
     def SecurityPage(self):
         try:
-            self.driver.get("https://www.amazon.com/gp/css/homepage.html/ref=nav_youraccount_btn")
+            self.driver.get(AmazonTables.URLDomains(self.FunctionInfo['country']) +
+                            "gp/css/homepage.html/ref=nav_youraccount_btn")
             WebDriverWait(self.driver, 20, 0.5, ignored_exceptions=TimeoutException). \
                 until(EC.visibility_of_element_located((By.XPATH, "//div[@data-card-identifier='SignInAndSecurity']")))
             self.driver.find_element_by_xpath("//div[@data-card-identifier='SignInAndSecurity']").click()
@@ -700,7 +700,8 @@ class AmazonFunction(page_scroll):
 
     def AddCreditCard(self):
         try:
-            self.driver.get("https://www.amazon.com/gp/css/homepage.html/ref=nav_youraccount_btn")
+            self.driver.get(AmazonTables.URLDomains(self.FunctionInfo['country']) +
+                            "gp/css/homepage.html/ref=nav_youraccount_btn")
             WebDriverWait(self.driver, 20, 0.5, ignored_exceptions=TimeoutException). \
                 until(EC.visibility_of_element_located((By.XPATH, "//div[@data-card-identifier='PaymentOptions']")))
             self.driver.find_element_by_xpath("//div[@data-card-identifier='PaymentOptions']").click()
@@ -924,7 +925,8 @@ class AmazonFunction(page_scroll):
 
     def CleanCart(self):
         self.FunctionInfo['status'] = False
-        try: self.driver.get("https://www.amazon.com/gp/cart/view.html/ref=nav_cart")
+        try: self.driver.get(AmazonTables.URLDomains(self.FunctionInfo['country']) +
+                             "gp/cart/view.html/ref=nav_cart")
         except: pass
         try:
             WebDriverWait(self.driver, 10, 0.5, ignored_exceptions=TimeoutException). \
@@ -953,7 +955,7 @@ class AmazonFunction(page_scroll):
         self.FunctionInfo['errorcode'] = 'AddressSetStart'
         try:
             time.sleep(2)
-            self.driver.get("https://www.amazon.com/a/addresses?ref_=ya_d_c_addr")
+            self.driver.get(AmazonTables.URLDomains(self.FunctionInfo['country']) + "a/addresses?ref_=ya_d_c_addr")
             time.sleep(2)
         except:
             pass
@@ -985,7 +987,7 @@ class AmazonFunction(page_scroll):
             not SMatch(self.Replace.sub(repl='',string=self.FunctionInfo['phonenumber']), AllAddressText):
             try:
                 self.driver.find_element_by_id('ya-myab-address-add-link').click()
-                #self.driver.get("https://www.amazon.com/a/addresses/add?ref=ya_address_book_add_button")
+                #self.driver.get(AmazonTables.URLDomains(self.FunctionInfo['country']) + "a/addresses/add?ref=ya_address_book_add_button")
                 WebDriverWait(self.driver, 30, 0.5, ignored_exceptions=TimeoutException) \
                     .until(EC.visibility_of_element_located((By.ID, "address-ui-address-form")))
                 #Select(self.driver.find_element_by_id("address-ui-widgets-countryCode-dropdown-nativeId")).\
@@ -1214,12 +1216,11 @@ class AmazonFunction(page_scroll):
 
     def PlaceOrder(self):
         self.FunctionInfo['status'] = False
-        self.driver.get("https://www.amazon.com/gp/cart/view.html/ref=nav_cart")
+        self.driver.get(AmazonTables.URLDomains(self.FunctionInfo['country']) + "gp/cart/view.html/ref=nav_cart")
         # proceed to check out, returun if cart is empty
         try:
             WebDriverWait(self.driver, 20, 0.5, ignored_exceptions=TimeoutException) \
                 .until(EC.visibility_of_element_located((By.ID, "sc-buy-box-ptc-button")))
-            OrderPrice = re.findall('[0-9\.]+', self.driver.find_element_by_xpath("//span[@class='a-size-medium a-color-price sc-price sc-white-space-nowrap  sc-price-sign']").text)[0]
             self.driver.find_element_by_id("sc-buy-box-ptc-button").click()
         except:
             print('Nothing in cart...')
@@ -1501,7 +1502,7 @@ class AmazonFunction(page_scroll):
         self.FunctionInfo['status'] = False
         self.FunctionInfo['errorcode'] = 'GoToReview'
         try:
-            self.driver.get("https://www.amazon.com/gp/your-account/order-history?ref_=ya_d_c_yo")
+            self.driver.get(AmazonTables.URLDomains(self.FunctionInfo['country']) + "gp/your-account/order-history?ref_=ya_d_c_yo")
         except:
             pass
 
@@ -1517,7 +1518,7 @@ class AmazonFunction(page_scroll):
             ReviewButton.click()
             print('Go to reviewer page through order page.')
         except:
-            try: self.driver.get("https://www.amazon.com/review/create-review/#")
+            try: self.driver.get(AmazonTables.URLDomains(self.FunctionInfo['country']) + "review/create-review/#")
             except: pass
             print('No review button. Go to review by link')
 
@@ -1677,7 +1678,7 @@ class AmazonFunction(page_scroll):
         print('CreatAcount:: ' + self.FunctionInfo['username'] + '  Password:: ' + self.FunctionInfo['password'])
 
         try:
-            self.driver.get("https://www.amazon.com/")
+            self.driver.get(AmazonTables.URLDomains(self.FunctionInfo['country']))
             WebDriverWait(self.driver, 20, 0.5, ignored_exceptions=TimeoutException) \
                 .until(EC.visibility_of_element_located((By.ID, "nav-link-accountList")))
             self.driver.find_element_by_id("nav-link-accountList").click()

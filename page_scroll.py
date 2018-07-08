@@ -64,7 +64,10 @@ class page_scroll:
 
     # 滚动到位置
     def sroll_to_position(self, position):
-        current_position = self.current_position()
+        try:
+            current_position = self.current_position()
+        except:
+            return False
         if current_position > position:
             if current_position > self.speed:
                 next_position = current_position - self.speed
