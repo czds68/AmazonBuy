@@ -85,7 +85,7 @@ class TaskManager():
             TaskInfo['status'] = False
             TaskInfo['errorcode'] = 'Start'
             TaskInfo['Timestamp'] = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-            if not TaskInfo['country']: TaskInfo['country'] = 'us'
+            if 'country' not in TaskInfo: TaskInfo.update({'country': 'us'})
             self.TaskQueue.put(TaskInfo)
 
     # A dummy subtask
