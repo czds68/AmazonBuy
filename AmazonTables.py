@@ -49,7 +49,8 @@ chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789'
 def URLDomains(Country = 'us'):
     URLTables = {'us': 'https://www.amazon.com/',
                 'ca': 'https://www.amazon.ca/',
-                'uk': 'https://www.amazon.co.uk/'}
+                'uk': 'https://www.amazon.co.uk/',
+                'au':'https://www.amazon.com.au/'}
     if URLTables[Country]:
         return URLTables[Country]
     else:
