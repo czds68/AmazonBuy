@@ -63,7 +63,12 @@ class page_scroll:
                 return False
 
     # 滚动到位置
-    def sroll_to_position(self, position):
+    def sroll_to_position(self, position, maxcnt = 100):
+        if maxcnt == 0:
+            self.driver.execute_script("window.scrollTo(0, arguments[0]);", position)
+            return True
+        else:
+            maxcnt -= 1
         try:
             current_position = self.current_position()
         except:
@@ -81,7 +86,7 @@ class page_scroll:
             next_position = current_position + self.speed
             self.driver.execute_script("window.scrollTo(0, arguments[0]);", next_position)
 
-        return self.sroll_to_position(position)
+        return self.sroll_to_position(position, maxcnt)
 
     # 滚动一屏
     def scroll_one_screen(self):
