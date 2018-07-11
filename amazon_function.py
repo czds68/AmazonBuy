@@ -1460,6 +1460,17 @@ class AmazonFunction(page_scroll):
                     break
         except:
             pass
+        # nothanks-button
+        try:
+            self.driver.find_element_by_id('mom-no-thanks').click()
+        except:
+            pass
+        try:
+            self.driver.find_element_by_id('desktop-shipping-address-div')
+        except:
+            time.sleep(1)
+            self.driver.refresh()
+            time.sleep(5)
         # check shipping address
         try:
             ShippingAddress = self.Replace.sub(repl='',string=self.driver.find_element_by_id('desktop-shipping-address-div').text.lower())
