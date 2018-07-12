@@ -512,7 +512,7 @@ class AmazonFunction(page_scroll):
                 # print(traceback.print_exc())
                 self.FunctionInfo['errorcode'] = 'CookieSetFail'
                 self.FunctionInfo['status'] = False
-                return False
+                #return False
             self.driver.get(AmazonTables.URLDomains(self.FunctionInfo['country']))
             time.sleep(5)
         try:
