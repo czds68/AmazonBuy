@@ -1142,12 +1142,17 @@ class AmazonFunction(page_scroll):
             WebDriverWait(self.driver, 20, 0.5, ignored_exceptions=TimeoutException) \
                 .until(EC.visibility_of_element_located((By.ID, "feature-bullets")))
             NewButtons = self.driver.find_elements_by_partial_link_text('from')
+            GoOfferList = False
             for item in NewButtons:
                 if 'offer-listing' in str(item.get_attribute("href")):
                     ProductLink = item.get_attribute("href")
                     self.move_to_element(item)
                     self.ClickElement(item)
+                    GoOfferList = True
                     break
+            if not GoOfferList:
+                self.driver.get("/gp/offer-listing/"+self.FunctionInfo['asin']+"/ref=dp_olp_new_mbc?ie=UTF8&amp;condition=new")
+                time.sleep(3)
         except:
             print('Production link error!!!'+ self.FunctionInfo['asin'])
             print(traceback.print_exc())
@@ -1687,12 +1692,13 @@ class AmazonFunction(page_scroll):
             self.FunctionInfo['username'] = Firstname + Lastname + str(randint(0, 999)) + EmailDomain
             self.FunctionInfo['password'] = ''.join(random.sample(chars, 10))
         print('CreatAcount:: ' + self.FunctionInfo['username'] + '  Password:: ' + self.FunctionInfo['password'])
-
+        time.sleep(5)
         try:
             self.driver.get(AmazonTables.URLDomains(self.FunctionInfo['country']))
             WebDriverWait(self.driver, 20, 0.5, ignored_exceptions=TimeoutException) \
-                .until(EC.visibility_of_element_located((By.ID, "nav-link-accountList")))
-            self.driver.find_element_by_id("nav-link-accountList").click()
+                .until(EC.visibility_of_element_located((By.ID, "nav-link-yourAccount")))
+            self.driver.find_element_by_id("nav-link-yourAccount").click()
+            time.sleep(5)
             WebDriverWait(self.driver, 20, 0.5, ignored_exceptions=TimeoutException) \
                 .until(EC.visibility_of_element_located((By.ID, "createAccountSubmit")))
             self.driver.find_element_by_id("createAccountSubmit").click()
