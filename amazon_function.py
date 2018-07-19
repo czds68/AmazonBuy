@@ -1150,9 +1150,9 @@ class AmazonFunction(page_scroll):
                     self.ClickElement(item)
                     GoOfferList = True
                     break
-            if not GoOfferList:
-                self.driver.get("/gp/offer-listing/"+self.FunctionInfo['asin']+"/ref=dp_olp_new_mbc?ie=UTF8&amp;condition=new")
-                time.sleep(3)
+            #if not GoOfferList:
+            #    self.driver.get("/gp/offer-listing/"+self.FunctionInfo['asin']+"/ref=dp_olp_new_mbc?ie=UTF8&amp;condition=new")
+            #    time.sleep(3)
         except:
             print('Production link error!!!'+ self.FunctionInfo['asin'])
             print(traceback.print_exc())
@@ -1696,8 +1696,8 @@ class AmazonFunction(page_scroll):
         try:
             self.driver.get(AmazonTables.URLDomains(self.FunctionInfo['country']))
             WebDriverWait(self.driver, 20, 0.5, ignored_exceptions=TimeoutException) \
-                .until(EC.visibility_of_element_located((By.ID, "nav-link-yourAccount")))
-            self.driver.find_element_by_id("nav-link-yourAccount").click()
+                .until(EC.visibility_of_element_located((By.ID, "nav-link-accountList")))
+            self.driver.find_element_by_id("nav-link-accountList").click()
             time.sleep(5)
             WebDriverWait(self.driver, 20, 0.5, ignored_exceptions=TimeoutException) \
                 .until(EC.visibility_of_element_located((By.ID, "createAccountSubmit")))
