@@ -37,7 +37,7 @@ class ViewTask(TaskManager):
         self.ReportInfo = ['Timestamp', 'department', 'asin', 'keyword', 'lowprice', 'highprice', 'buyboxprice', 'country', 'taskid']
         self.ReportErrorInfo = ['errorcode', 'retrynumber']
         self.FatalError = ['OverDay']
-        self.TaskSync = True
+        self.TaskSync = False
         self.CodeLogEn(False)
         self.ThreadNumber = 15
         self.MaxRetry = 3
