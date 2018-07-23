@@ -39,7 +39,7 @@ class ViewTask(TaskManager):
         self.FatalError = ['OverDay']
         self.TaskSync = True
         self.CodeLogEn(False)
-        self.ThreadNumber = 3
+        self.ThreadNumber = 15
         self.MaxRetry = 3
         self.AuthProxy = False
         self.ProxyEnable = True

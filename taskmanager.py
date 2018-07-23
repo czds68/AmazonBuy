@@ -80,6 +80,7 @@ class TaskManager():
             sys.stdout = self.__console__
 
     def FillInfo(self):
+        self.FileLock.acquire()
         for TaskInfo in self.TaskInfos:
             TaskInfo['retrynumber'] = 0
             TaskInfo['status'] = False
@@ -87,6 +88,7 @@ class TaskManager():
             TaskInfo['Timestamp'] = str(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
             if 'country' not in TaskInfo: TaskInfo.update({'country': 'us'})
             self.TaskQueue.put(TaskInfo)
+        self.FileLock.release()
 
     # A dummy subtask
     def SubTask(self, driver, TaskInfo):
@@ -133,6 +135,9 @@ class TaskManager():
             driver.set_page_load_timeout(10)
             driver.set_script_timeout(10)
             driver.implicitly_wait(10)
+        except:
+            pass
+        try:
             driver.maximize_window()
         except:
             print('Set full screen fail!')
@@ -299,6 +304,10 @@ class TaskManager():
             else:
                 self.ThreadSelect = i
 
+    # task in Main thread
+    def InMianTask(self):
+        pass
+
     def TaskManage(self):
         # fill Queue
         self.FillInfo()
@@ -318,7 +327,7 @@ class TaskManager():
                         time.sleep(5)
                         self.CountThread()
                     self.SubSyncFunc()
-
+            self.InMianTask()
             # get task info from queue
             if self.TaskQueue.empty():
                 self.CountThread()
