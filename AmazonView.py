@@ -127,12 +127,16 @@ class ViewTask(TaskManager):
         OpenFile.close()
         self.FileLock.release()
 
+    # task in Main thread
+    def InMianTask(self):
+        if self.day_date != datetime.now().day:
+            self.FileLock.acquire()
+            self.TaskQueue.queue.clear()
+            self.FileLock.release()
+            return True
+
     # overiding method
     def SubTask(self, driver, TaskInfo):
-        if self.day_date != datetime.now().day:
-            TaskInfo['status'] = False
-            TaskInfo['errorcode'] = 'OverDay'
-            return True
         driver.implicitly_wait(10)
         for item in self.TaskSummury:
             if TaskInfo['asin'] == item['asin'] and TaskInfo['country'] == item['country']:
