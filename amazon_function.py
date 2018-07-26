@@ -1180,11 +1180,14 @@ class AmazonFunction(page_scroll):
                     print('Price compare : ' + CartElements[i].text.strip('[$£]') + '===' + self.FunctionInfo['orderprice'])
                     self.ClickElement(AddCartButtons[i])#AddCartButtons[i].click()
                     AddCartDone = True
+                    try: AddCartButtons[i].click()
+                    except: pass
                     break
         except:
             #print(traceback.print_exc())
             print('Add to cart: Not found in offer list:: ' + self.FunctionInfo['asin'])
             pass
+
         # if no 'from new'
         if AddCartDone:
             print('Adding to cart...'+ self.FunctionInfo['asin'])
