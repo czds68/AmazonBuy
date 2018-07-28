@@ -76,7 +76,7 @@ class PlaceOrder(TaskManager):
         self.TaskSync = False
         self.CodeLogEn(False)
         self.ThreadNumber = 1
-        self.MaxRetry = 3
+        self.MaxRetry = 1
         self.AuthProxy = True
         self.ProxyEnable = True
         self.ProxyTimeout = 60
