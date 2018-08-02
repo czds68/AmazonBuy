@@ -1438,6 +1438,18 @@ class AmazonFunction(page_scroll):
         except:
             pass
 
+        try:
+            self.driver.find_element_by_class_name('new-payment-methods-wrapper')
+            self.driver.find_element_by_id('ccName').send_keys(self.FunctionInfo['nameoncard'])
+            self.driver.find_element_by_id('addCreditCardNumber').send_keys(self.FunctionInfo['ccnumber'])
+            select = Select(self.driver.find_element_by_id('ccMonth'))
+            select.select_by_visible_text(self.FunctionInfo['ccmonth'])
+            select = Select(self.driver.find_element_by_id('ccYear'))
+            select.select_by_visible_text(self.FunctionInfo['ccyear'])
+            self.ClickElement(self.driver.find_element_by_id('ccAddCard'))
+        except:
+            pass
+
         # continue to pay
         try:
             #self.driver.find_element_by_id('order-summary-container').find_element_by_id('continue-top').click()
