@@ -98,17 +98,20 @@ class PlaceOrder(TaskManager):
         if not Task.login():
             return False
         time.sleep(5)
+        '''
         SubRetry = 0
         while not Task.CleanCart():
             SubRetry += 1
             if SubRetry > self.SubMaxRetry:
                 return False
+        '''
         SubRetry = 0
         while not Task.SetAddress():
             SubRetry += 1
             if SubRetry > self.SubMaxRetry:
                 return False
         SearchTask = AmazonPages(driver)
+        SearchTask.SortOutTask(TaskInfo['asins'])
         for asin in TaskInfo['asins']:
             Task.FunctionInfo['asin'] = asin
             Task.FunctionInfo.update(ProductFrame.loc[Task.FunctionInfo['asin']].to_dict())

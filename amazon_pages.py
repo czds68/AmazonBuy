@@ -22,6 +22,7 @@ from verificationcode import getverifycode
 from AmazonTables import chars
 from AmazonTables import DepartmentTable
 import threading
+import AmazonTables
 
 class AmazonPages(page_scroll):
     def __init__(self, driver):
@@ -455,3 +456,24 @@ class AmazonPages(page_scroll):
         Info['status'] = True
         Info['errorcode'] = 'ViewDone'
         return True
+
+    def SortOutTask(self,Info):
+        if not Info['asins']:
+            print('All ASINS is in cart now ...')
+            return True
+        try: self.driver.get(AmazonTables.URLDomains(self.FunctionInfo['country']) +
+                             "gp/cart/view.html/ref=nav_cart")
+        except: pass
+        try:
+            CartElements = self.driver.find_elements_by_class_name('sc-list-item-border')
+            CartASINS = []
+            for item in CartElements:
+                CartASINS.append(item.get_attribute('data-asin'))
+            for asin in Info['asins']:
+                if asin in CartASINS:
+                    Info['asins'].remove(asin)
+            print('Task Asins sorted out:' + Info['asins'])
+            return True
+        except:
+            print('Task Asins sorted out fail')
+            return False
