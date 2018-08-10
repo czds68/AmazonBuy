@@ -111,7 +111,7 @@ class PlaceOrder(TaskManager):
             if SubRetry > self.SubMaxRetry:
                 return False
         SearchTask = AmazonPages(driver)
-        SearchTask.SortOutTask(TaskInfo['asins'])
+        SearchTask.SortOutTask(TaskInfo)
         for asin in TaskInfo['asins']:
             Task.FunctionInfo['asin'] = asin
             Task.FunctionInfo.update(ProductFrame.loc[Task.FunctionInfo['asin']].to_dict())
