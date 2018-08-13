@@ -463,7 +463,7 @@ class AmazonPages(page_scroll):
             print('All ASINS is in cart now ...')
             return True
         try:
-            self.driver.get(AmazonTables.URLDomains(self.FunctionInfo['country']) + "gp/cart/view.html/ref=nav_cart")
+            self.driver.get(AmazonTables.URLDomains(Info['country']) + "gp/cart/view.html/ref=nav_cart")
             time.sleep(5)
         except: pass
         try:
