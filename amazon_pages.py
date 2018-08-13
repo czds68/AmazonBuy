@@ -438,6 +438,7 @@ class AmazonPages(page_scroll):
             if self.FindProduct(asin=Info['asin'], ClickProduct=ClickProduct):
                 return True
             if not self.GoToNextPage():
+                print('Go next page fail!!!')
                 return False
 
     def SearchAndView(self, Info, timer = randint(300,600)):
@@ -461,10 +462,13 @@ class AmazonPages(page_scroll):
         if not Info['asins']:
             print('All ASINS is in cart now ...')
             return True
-        try: self.driver.get(AmazonTables.URLDomains(self.FunctionInfo['country']) +
-                             "gp/cart/view.html/ref=nav_cart")
+        try:
+            self.driver.get(AmazonTables.URLDomains(self.FunctionInfo['country']) + "gp/cart/view.html/ref=nav_cart")
+            time.sleep(5)
         except: pass
         try:
+            WebDriverWait(self.driver, 20, 0.5, ignored_exceptions=TimeoutException) \
+                .until(EC.visibility_of_element_located((By.ID, "sc-active-cart")))
             CartElements = self.driver.find_elements_by_class_name('sc-list-item-border')
             CartASINS = []
             for item in CartElements:
