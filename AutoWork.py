@@ -98,13 +98,12 @@ class PlaceOrder(TaskManager):
         if not Task.login():
             return False
         time.sleep(5)
-        '''
-        SubRetry = 0
-        while not Task.CleanCart():
-            SubRetry += 1
-            if SubRetry > self.SubMaxRetry:
-                return False
-        '''
+        if TaskInfo['retrynumber'] == 0:
+            SubRetry = 0
+            while not Task.CleanCart():
+                SubRetry += 1
+                if SubRetry > self.SubMaxRetry:
+                    return False
         SubRetry = 0
         while not Task.SetAddress():
             SubRetry += 1
