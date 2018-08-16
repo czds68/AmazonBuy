@@ -114,8 +114,8 @@ class PlaceOrder(TaskManager):
         for asin in TaskInfo['asins']:
             Task.FunctionInfo['asin'] = asin
             Task.FunctionInfo.update(ProductFrame.loc[Task.FunctionInfo['asin']].to_dict())
-            Task.FunctionInfo['lowprice'] = str(round((float(Task.FunctionInfo['buyboxprice']) - 0.01), 2))
-            Task.FunctionInfo['highprice'] = str(round((float(Task.FunctionInfo['buyboxprice']) + 0.01), 2))
+            Task.FunctionInfo['lowprice'] = str(round((float(Task.FunctionInfo['buyboxprice']) - 0.05), 2))
+            Task.FunctionInfo['highprice'] = str(round((float(Task.FunctionInfo['buyboxprice']) + 0.05), 2))
             #Task.FunctionInfo['lowprice'] = Task.FunctionInfo['buyboxprice']
             #Task.FunctionInfo['highprice'] = Task.FunctionInfo['buyboxprice']
             SubRetry = 0
