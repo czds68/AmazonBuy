@@ -1,5 +1,12 @@
 from difflib import SequenceMatcher
 import re
+import os
+
+def GetMacAddress():
+    MacFilter = re.compile(r'[:0-9A-Fa-f]{17}')
+    output = str(os.popen('sudo spoof-mac.py list').read())
+    return ( MacFilter.findall(output)[0])
+
 def SMatch(StrA,StrB, Ratio = 0.50, CaseSensitive = False, SubSymbol = True,MatchLengthRate = 1.8):
     if not StrA or not StrB:
         return False
